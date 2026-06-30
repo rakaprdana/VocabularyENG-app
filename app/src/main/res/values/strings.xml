@@ -3,4 +3,5 @@
     <string name="txt_title_default">Lemme Know Your Name</string>
     <string name="txt_hint_input_name">Hello, I\'m...</string>
     <string name="txt_start_button">Let\'s Start</string>
+    <string name="txt_title_replaced">Tell me your name</string>
 </resources>
