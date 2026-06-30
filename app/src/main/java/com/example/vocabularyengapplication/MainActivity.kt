@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         //Perlu dicek karna hasil uji coba
         val savedUserNamed = sharedPreferences.getString("USER_NAME", null)
         if (savedUserNamed != null){
-
+            //direct to main page
         } else{
             showOnBoard()
         }
