@@ -1,5 +1,6 @@
 package com.example.vocabularyengapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.example.vocabularyengapplication.databinding.ActivityDashboardBinding
 import com.example.vocabularyengapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bindingMain: ActivityMainBinding
-    val sharedPreferences = getSharedPreferences("User", MODE_PRIVATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +22,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(bindingMain.root)
 
         //Perlu dicek karna hasil uji coba
+        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val savedUserNamed = sharedPreferences.getString("USER_NAME", null)
         if (savedUserNamed != null){
             //direct to main page
+            navigateToDashboard(savedUserNamed)
         } else{
             showOnBoard()
         }
@@ -57,12 +60,20 @@ class MainActivity : AppCompatActivity() {
         bindingMain.btnStart.setOnClickListener {
             val userName = bindingMain.etNameOnboarding.text.toString()
             saveName(userName)
+            navigateToDashboard(userName)
         }
     }
 
     private fun saveName(userName: String){
+        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("USER_NAME", userName)
         editor.apply()
+    }
+
+    private fun navigateToDashboard(userName: String){
+        val intent = Intent(this, DashboardActivity::class.java)
+        intent.putExtra("USER_NAME", userName)
+        startActivity(intent)
     }
 }
