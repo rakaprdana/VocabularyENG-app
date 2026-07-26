@@ -1,6 +1,7 @@
-package com.example.vocabularyengapplication
+package com.example.vocabularyengapplication.model
 
 import androidx.annotation.ColorRes
+import com.example.vocabularyengapplication.R
 
 enum class WordCategory (val title: String, @ColorRes color: Int){
     ALL_CATEGORIES("All Category", R.color.black),
