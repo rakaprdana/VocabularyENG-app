@@ -32,7 +32,7 @@ class AddActivity : AppCompatActivity() {
                 bindingAddActivity.etMeaning.text.toString(),
                 bindingAddActivity.spinnerCategory.selectedItem.toString()
             )
-            setResult(201, Intent())
+            setResult(200, Intent())
             finish()
         }
 

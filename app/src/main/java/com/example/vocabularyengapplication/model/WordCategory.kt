@@ -3,7 +3,7 @@ package com.example.vocabularyengapplication.model
 import androidx.annotation.ColorRes
 import com.example.vocabularyengapplication.R
 
-enum class WordCategory (val title: String, @ColorRes color: Int){
+enum class WordCategory (val title: String, @ColorRes val color: Int){
     ALL_CATEGORIES("All Category", R.color.black),
     ADJECTIVE("Adjective", R.color.green_51DC2E),
     PREPOSITION("Preposition", R.color.red_DC572E),

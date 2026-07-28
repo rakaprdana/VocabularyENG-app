@@ -8,12 +8,22 @@ import com.example.vocabularyengapplication.model.WordCategory
 import com.example.vocabularyengapplication.model.WordData
 
 class SqlDBHandler(context: Context?): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+    companion object{
+        private const val DB_NAME = "vocabdb"
+        private const val TABLE_NAME = "vocab"
+        private const val DB_VERSION= 1
+        private const val ID_COL = "id"
+        private const val NAME_COL = "name"
+        private const val MEANING_COL = "meaning"
+        private const val CATEGORY_COL = "category"
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
-        val query = ("CREATE TABLE" + TABLE_NAME + "(" +
-                ID_COL + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + NAME_COL + "TEXT,"
-                + MEANING_COL + "TEXT,"
-                + CATEGORY_COL + "TEXT" + ")"
+        val query = ("CREATE TABLE " + TABLE_NAME + " (" +
+                ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + NAME_COL + " TEXT,"
+                + MEANING_COL + " TEXT,"
+                + CATEGORY_COL + " TEXT)"
                 )
     db?.execSQL(query)
     }
@@ -37,20 +47,18 @@ class SqlDBHandler(context: Context?): SQLiteOpenHelper(context, DB_NAME, null, 
         val vocabList: ArrayList<WordData> = arrayListOf()
 
         if (cursorVocabs.moveToFirst()){
-            {
-                do {
-                    WordCategory.values().map {
-                        if (it.title == cursorVocabs.getString(3)){
-                            vocabList.add(
-                                WordData(cursorVocabs.getInt(0),
+            do {
+                WordCategory.values().map {
+                    if (it.title == cursorVocabs.getString(3)){
+                        vocabList.add(
+                            WordData(cursorVocabs.getInt(0),
                                 cursorVocabs.getString(1),
                                 cursorVocabs.getString(2),
                                 it)
-                            )
-                        }
+                        )
                     }
-                } while (cursorVocabs.moveToNext())
-            }
+                }
+            } while (cursorVocabs.moveToNext())
         }
         cursorVocabs.close()
         return vocabList
@@ -70,15 +78,5 @@ class SqlDBHandler(context: Context?): SQLiteOpenHelper(context, DB_NAME, null, 
     ) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         onCreate(db)
-    }
-
-    companion object{
-        private const val DB_NAME = "vocabdb"
-        private const val TABLE_NAME = "vocab"
-        private const val DB_VERSION= 1
-        private const val ID_COL = "id"
-        private const val NAME_COL = "name"
-        private const val MEANING_COL = "meaning"
-        private const val CATEGORY_COL = "category"
     }
 }
