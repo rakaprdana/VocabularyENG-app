@@ -21,42 +21,44 @@ class MainActivity : AppCompatActivity() {
         bindingMain = ActivityMainBinding.inflate(layoutInflater)
         setContentView(bindingMain.root)
 
-        //Perlu dicek karna hasil uji coba
+        // Perlu dicek karna hasil uji coba
         val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val savedUserNamed = sharedPreferences.getString("USER_NAME", null)
-        if (savedUserNamed != null){
-            //direct to main page
+        if (savedUserNamed != null) {
+            // direct to main page
             navigateToDashboard(savedUserNamed)
-        } else{
+        } else {
             showOnBoard()
         }
     }
 
-    private fun showOnBoard(){
-        bindingMain.etNameOnboarding.addTextChangedListener(object: TextWatcher{
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-                bindingMain.tvTitle.text = getString(R.string.txt_title_default)
-            }
+    private fun showOnBoard() {
+        bindingMain.etNameOnboarding.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {
+                    bindingMain.tvTitle.text = getString(R.string.txt_title_default)
+                }
 
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                bindingMain.tvTitle.text = getString(R.string.txt_title_replaced)
-            }
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    bindingMain.tvTitle.text = getString(R.string.txt_title_replaced)
+                }
 
-            override fun afterTextChanged(s: Editable?) {
-                bindingMain.tvTitle.text = getString(R.string.txt_title_replaced)
-                bindingMain.btnStart.isVisible = !s.isNullOrEmpty()
-            }
-        })
+                override fun afterTextChanged(s: Editable?) {
+                    bindingMain.tvTitle.text = getString(R.string.txt_title_replaced)
+                    bindingMain.btnStart.isVisible = !s.isNullOrEmpty()
+                }
+            },
+        )
         bindingMain.btnStart.setOnClickListener {
             val userName = bindingMain.etNameOnboarding.text.toString()
             saveName(userName)
@@ -64,14 +66,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveName(userName: String){
+    private fun saveName(userName: String) {
         val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("USER_NAME", userName)
         editor.apply()
     }
 
-    private fun navigateToDashboard(userName: String){
+    private fun navigateToDashboard(userName: String) {
         val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("USER_NAME", userName)
         startActivity(intent)

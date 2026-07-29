@@ -11,17 +11,19 @@ import com.example.vocabularyengapplication.model.WordData
 class VocabAdapter(
     mList: List<WordData>,
     selectedListState: ListWordState,
-    private val onRemoveItem: (Int) -> Unit
-): RecyclerView.Adapter<VocabAdapter.VocabViewHolder>() {
+    private val onRemoveItem: (Int) -> Unit,
+) : RecyclerView.Adapter<VocabAdapter.VocabViewHolder>() {
     private var currentList = mList
     private var currentListState = selectedListState
 
-    class VocabViewHolder(private val itemWordViewBinding: ItemVocabularyBinding):
-        RecyclerView.ViewHolder(itemWordViewBinding.root) {
+    class VocabViewHolder(
+        private val itemWordViewBinding: ItemVocabularyBinding,
+    ) : RecyclerView.ViewHolder(itemWordViewBinding.root) {
         fun bind(
             item: WordData,
             currentListState: ListWordState,
-            onRemoveItem: (Int)-> Unit){
+            onRemoveItem: (Int) -> Unit,
+        ) {
             itemWordViewBinding.tvNameVocab.text = item.name
             itemWordViewBinding.tvMeaning.text = item.meaning
             itemWordViewBinding.tvCategory.apply {
@@ -30,7 +32,7 @@ class VocabAdapter(
             }
 
             itemWordViewBinding.layoutCategory.setCardBackgroundColor(
-                itemWordViewBinding.root.context.getColor(item.category.color)
+                itemWordViewBinding.root.context.getColor(item.category.color),
             )
 
             itemWordViewBinding.btnRemove.isVisible = currentListState == ListWordState.REMOVE
@@ -39,26 +41,30 @@ class VocabAdapter(
             }
         }
     }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): VocabViewHolder {
         val view = ItemVocabularyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return VocabViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: VocabViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: VocabViewHolder,
+        position: Int,
+    ) {
         holder.bind(currentList[position], currentListState, onRemoveItem)
     }
 
     override fun getItemCount(): Int = currentList.size
 
-    internal fun setListState(selectedListState: ListWordState){
+    internal fun setListState(selectedListState: ListWordState) {
         currentListState = selectedListState
         notifyDataSetChanged()
     }
 
-    internal fun refreshList(list: List<WordData>){
+    internal fun refreshList(list: List<WordData>) {
         currentList = list
         notifyDataSetChanged()
     }

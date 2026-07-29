@@ -44,32 +44,37 @@ class DashboardActivity : AppCompatActivity() {
         setCategoryList()
         setVocabList()
 
-        //button for navigate
+        // button for navigate
         bindingDashboard.ivAdd.setOnClickListener {
             navigateToNewVocab()
         }
 
-        //button delete
+        // button delete
         bindingDashboard.ivDelete.setOnClickListener {
-            buttonCancel()
             selectedListState = ListWordState.REMOVE
             adapterVocab.setListState(selectedListState)
+            buttonCancel()
         }
 
-        //button cancel
+        // button cancel
         bindingDashboard.btnCancel.setOnClickListener {
-            btnDeleteAdd()
+            /*Jika terjadi perubahan state pada sebuah event handler,
+            perbarui nilai state terlebih dahulu sebelum memanggil
+            fungsi pembaharu UI.
+             * */
             selectedListState = ListWordState.NORMAL
             adapterVocab.setListState(selectedListState)
+            btnDeleteAdd()
         }
     }
 
     fun setCategoryList() {
         val categoryList = WordCategory.values().toList()
-        adapterCategory = CategoryAdapter(categoryList, selectedCategory) { wordCategory ->
-            selectedCategory = wordCategory
-            refreshListCategoryAndVocab(wordCategory)
-        }
+        adapterCategory =
+            CategoryAdapter(categoryList, selectedCategory) { wordCategory ->
+                selectedCategory = wordCategory
+                refreshListCategoryAndVocab(wordCategory)
+            }
 
         bindingDashboard.rvCategory.apply {
             layoutManager =
@@ -79,28 +84,30 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun refreshListCategoryAndVocab(wordCategory: WordCategory) {
-        val listWord = if (wordCategory == WordCategory.ALL_CATEGORIES) {
-            dbHandler.getVocab()
-        } else {
-            dbHandler.getVocab().filter { it.category == wordCategory }
-        }
-        //update list
+        val listWord =
+            if (wordCategory == WordCategory.ALL_CATEGORIES) {
+                dbHandler.getVocab()
+            } else {
+                dbHandler.getVocab().filter { it.category == wordCategory }
+            }
+        // update list
         adapterVocab.refreshList(listWord)
         adapterCategory.updateSelectedCategory(selectedCategory)
     }
 
-    //navigate to add new vocab
-    private fun navigateToNewVocab(){
+    // navigate to add new vocab
+    private fun navigateToNewVocab() {
         val intent = Intent(this, AddActivity::class.java)
         startActivityForResult(intent, 200)
     }
 
-    //set value adapter vocab
-    private fun setVocabList(){
-        adapterVocab = VocabAdapter(dbHandler.getVocab(), selectedListState){ positionToBeRemove ->
-            // remove and refresh function
-            refreshAndRemove(positionToBeRemove)
-        }
+    // set value adapter vocab
+    private fun setVocabList() {
+        adapterVocab =
+            VocabAdapter(dbHandler.getVocab(), selectedListState) { positionToBeRemove ->
+                // remove and refresh function
+                refreshAndRemove(positionToBeRemove)
+            }
 
         bindingDashboard.rvVocab.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -108,28 +115,28 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshAndRemove(position: Int){
+    private fun refreshAndRemove(position: Int) {
         dbHandler.deleteVocab(position)
         adapterVocab.refreshList(dbHandler.getVocab())
 
-        //logic for visible button
-        if (dbHandler.getVocab().isNotEmpty()){
+        // logic for visible button
+        if (dbHandler.getVocab().isNotEmpty()) {
             buttonCancel()
-        } else{
+        } else {
             btnDeleteAdd()
         }
 
         setProgressAndRefresh()
     }
 
-    private fun buttonCancel(){
+    private fun buttonCancel() {
         bindingDashboard.btnCancel.isVisible = true
         bindingDashboard.ivDelete.isVisible = false
-        bindingDashboard.ivAdd.isVisible = true
+        bindingDashboard.ivAdd.isVisible = false
         setProgressAndRefresh()
     }
 
-    private fun btnDeleteAdd(){
+    private fun btnDeleteAdd() {
         bindingDashboard.btnCancel.isVisible = false
         bindingDashboard.ivAdd.isVisible = true
         bindingDashboard.ivDelete.isVisible = dbHandler.getVocab().isNotEmpty()
@@ -142,14 +149,14 @@ class DashboardActivity : AppCompatActivity() {
         data: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 200){
+        if (requestCode == 200) {
             adapterVocab.refreshList(dbHandler.getVocab())
             btnDeleteAdd()
         }
     }
 
-    private fun setProgressAndRefresh(){
-        progress = (dbHandler.getVocab().size * 100/maxVocab)
+    private fun setProgressAndRefresh() {
+        progress = (dbHandler.getVocab().size * 100 / maxVocab)
         bindingDashboard.tvTitleVocabAvailableValue.text = getString(R.string.txt_available_value, progress)
         bindingDashboard.tvAchieved.text = "$progress %"
         bindingDashboard.pbAchieved.progress = progress

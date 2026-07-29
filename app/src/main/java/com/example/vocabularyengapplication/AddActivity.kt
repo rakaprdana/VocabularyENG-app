@@ -14,6 +14,7 @@ import com.example.vocabularyengapplication.model.WordCategory
 class AddActivity : AppCompatActivity() {
     private lateinit var bindingAddActivity: ActivityAddBinding
     private val sqlHandler: SqlDBHandler = SqlDBHandler(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -23,14 +24,18 @@ class AddActivity : AppCompatActivity() {
 
         bindingAddActivity.btnSave.setOnClickListener {
             if (bindingAddActivity.etName.text.isNullOrEmpty() ||
-                bindingAddActivity.etMeaning.text.isNullOrEmpty()||
-                bindingAddActivity.spinnerCategory.selectedItem.toString().isEmpty()
-                ) return@setOnClickListener
+                bindingAddActivity.etMeaning.text.isNullOrEmpty() ||
+                bindingAddActivity.spinnerCategory.selectedItem
+                    .toString()
+                    .isEmpty()
+            ) {
+                return@setOnClickListener
+            }
 
             sqlHandler.addVocab(
                 bindingAddActivity.etName.text.toString(),
                 bindingAddActivity.etMeaning.text.toString(),
-                bindingAddActivity.spinnerCategory.selectedItem.toString()
+                bindingAddActivity.spinnerCategory.selectedItem.toString(),
             )
             setResult(200, Intent())
             finish()
@@ -41,21 +46,23 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun setSpinner(){
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, getCategoryList()
-        )
+    private fun setSpinner() {
+        val adapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(
+                this,
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+                getCategoryList(),
+            )
         adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         bindingAddActivity.spinnerCategory.adapter = adapter
     }
 
-    private fun getCategoryList(): List<String>{
-        return WordCategory.values().map {
-            if (it == WordCategory.ALL_CATEGORIES){
+    private fun getCategoryList(): List<String> =
+        WordCategory.values().map {
+            if (it == WordCategory.ALL_CATEGORIES) {
                 ""
-            } else{
+            } else {
                 it.title
             }
         }
-    }
 }
